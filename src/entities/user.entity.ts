@@ -1,5 +1,6 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Company } from '@entities/company.entity';
+import { InventoryHistory } from '@entities/inventory-history.entity';
 import { BaseEntity } from '@entities/base.entity';
 
 export enum UserRole {
@@ -27,4 +28,7 @@ export class User extends BaseEntity {
   @ManyToOne(() => Company, (company) => company.users)
   @JoinColumn({ name: 'company_id' })
   company: Company;
+
+  @OneToMany(() => InventoryHistory, (history) => history.user)
+  inventoryHistories: InventoryHistory[];
 }
