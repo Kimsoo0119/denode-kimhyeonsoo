@@ -8,6 +8,7 @@ import {
   UserException,
 } from '@core/exceptions/constants';
 import { toSwaggers } from '@core/exceptions/utils';
+import { LoginResponseDto } from '@api/auth/dtos/responses/login-response.dto';
 
 export const ApiAuth: ApiOperator<keyof AuthController> = {
   Signup: (apiOperationOptions: ApiOperationOptions) =>
@@ -25,5 +26,12 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
         ),
       )
       .withNotFoundResponse(toSwaggers(CompanyException.NOT_FOUND))
+      .build(),
+
+  Login: (apiOperationOptions: ApiOperationOptions) =>
+    CustomSwaggerBuilder()
+      .withOperation(apiOperationOptions)
+      .withBodyResponse(HttpStatus.CREATED, 'ApiAuth_Login', LoginResponseDto)
+      .withBadRequestResponse(toSwaggers(AuthException.INVALID_CREDENTIALS))
       .build(),
 };

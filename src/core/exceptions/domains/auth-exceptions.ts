@@ -30,15 +30,6 @@ export namespace AuthExceptions {
     }
   }
 
-  export class InvalidPassword extends CustomBadRequest {
-    constructor() {
-      super(
-        AuthException.INVALID_PASSWORD.code,
-        AuthException.INVALID_PASSWORD.message,
-      );
-    }
-  }
-
   export class InvalidPasswordLength extends CustomBadRequest {
     constructor() {
       super(
