@@ -11,7 +11,7 @@ import { Company } from '@entities/company.entity';
 import { Inventory } from '@entities/inventory.entity';
 
 @Entity('products')
-@Index(['company_id', 'is_active'])
+@Index(['companyId', 'isActive'])
 export class Product extends BaseEntity {
   @Column({ length: 255 })
   name: string;
