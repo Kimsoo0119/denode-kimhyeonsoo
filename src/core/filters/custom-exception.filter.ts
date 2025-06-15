@@ -1,6 +1,6 @@
 import { ExceptionFilter, Catch, ArgumentsHost, Logger } from '@nestjs/common';
 import { Response } from 'express';
-import { CustomException } from '@core/exceptions/custom.exception';
+import { CustomException } from '@core/exceptions/http/custom.exception';
 
 @Catch(CustomException)
 export class CustomExceptionFilter implements ExceptionFilter<CustomException> {
@@ -10,11 +10,11 @@ export class CustomExceptionFilter implements ExceptionFilter<CustomException> {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
-    const error = exception.getResponse();
 
     const res = {
       status,
-      error,
+      error: exception.error,
+      message: exception.message,
     };
 
     this.logger.error(res);

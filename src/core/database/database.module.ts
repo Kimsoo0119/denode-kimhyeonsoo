@@ -9,7 +9,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get('DB_HOST'),
+        host: configService.get('DB_HOST') || 'localhost',
         port: configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),

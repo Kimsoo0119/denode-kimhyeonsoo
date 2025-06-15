@@ -5,7 +5,13 @@ import {
   ApiPropertyOptions,
 } from '@nestjs/swagger';
 import { Expose, Transform } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  MinLength,
+  MaxLength,
+} from 'class-validator';
 
 export function RequiredApiProperty(options?: ApiPropertyOptions) {
   return applyDecorators(ApiProperty(options), IsNotEmpty());
@@ -31,4 +37,8 @@ export function ExposeApiProperty(options?: ApiPropertyOptions) {
 
 export function ExposeNullableApiProperty(options?: ApiPropertyOptions) {
   return applyDecorators(ApiProperty({ ...options, nullable: true }), Expose());
+}
+
+export function IsLength(min: number, max: number) {
+  return applyDecorators(MinLength(min), MaxLength(max));
 }
