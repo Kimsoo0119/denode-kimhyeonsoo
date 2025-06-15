@@ -1,5 +1,6 @@
 import { CustomConflict } from '@core/exceptions/http/custom-conflict';
 import { CustomBadRequest } from '@core/exceptions/http/custom-bad-request';
+import { CustomUnauthorized } from '@core/exceptions/http/custom-unauthorized';
 import { AuthException } from '@core/exceptions/constants';
 
 export namespace AuthExceptions {
@@ -53,6 +54,39 @@ export namespace AuthExceptions {
       super(
         AuthException.PASSWORD_MISSING_NUMBER.code,
         AuthException.PASSWORD_MISSING_NUMBER.message,
+      );
+    }
+  }
+
+  export class NoAuthToken extends CustomUnauthorized {
+    constructor() {
+      super(
+        AuthException.NO_AUTH_TOKEN.code,
+        AuthException.NO_AUTH_TOKEN.message,
+      );
+    }
+  }
+
+  export class InvalidToken extends CustomUnauthorized {
+    constructor() {
+      super(
+        AuthException.INVALID_TOKEN.code,
+        AuthException.INVALID_TOKEN.message,
+      );
+    }
+  }
+
+  export class JwtExpired extends CustomUnauthorized {
+    constructor() {
+      super(AuthException.JWT_EXPIRED.code, AuthException.JWT_EXPIRED.message);
+    }
+  }
+
+  export class Unauthorized extends CustomUnauthorized {
+    constructor() {
+      super(
+        AuthException.UNAUTHORIZED.code,
+        AuthException.UNAUTHORIZED.message,
       );
     }
   }

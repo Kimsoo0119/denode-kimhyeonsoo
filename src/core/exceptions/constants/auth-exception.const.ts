@@ -23,6 +23,22 @@ export const AuthException = {
     code: 'D_01006',
     message: '비밀번호에 숫자가 포함되어 있어야 합니다.',
   },
+  NO_AUTH_TOKEN: {
+    code: 'D_01007',
+    message: '토큰이 제공되지 않았습니다.',
+  },
+  INVALID_TOKEN: {
+    code: 'D_01008',
+    message: '유효하지 않은 토큰입니다.',
+  },
+  JWT_EXPIRED: {
+    code: 'D_01009',
+    message: '토큰이 만료되었습니다.',
+  },
+  UNAUTHORIZED: {
+    code: 'D_01010',
+    message: '올바르지 않은 요청입니다.',
+  },
 } as const;
 
 export type AuthExceptionKey = keyof typeof AuthException;

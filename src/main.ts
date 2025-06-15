@@ -4,6 +4,7 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { SuccessInterceptor } from '@core/interceptors/success.interceptor';
 import { CustomExceptionFilter } from '@core/filters/custom-exception.filter';
 import { HttpExceptionFilter } from '@core/filters/http-exception.filter';
+import { UnauthorizedExceptionFilter } from '@core/filters/unauthorized-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -25,11 +26,16 @@ async function bootstrap() {
     new SuccessInterceptor(),
   );
 
-  app.useGlobalFilters(new HttpExceptionFilter(), new CustomExceptionFilter());
+  app.useGlobalFilters(
+    new HttpExceptionFilter(),
+    new CustomExceptionFilter(),
+    new UnauthorizedExceptionFilter(),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('DENODE API')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
