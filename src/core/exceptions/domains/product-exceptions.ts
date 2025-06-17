@@ -33,8 +33,17 @@ export namespace ProductExceptions {
   export class InvalidQuantity extends CustomBadRequest {
     constructor() {
       super(
-        ProductException.INVALID_QUANTITY.code,
-        ProductException.INVALID_QUANTITY.message,
+        ProductException.INVALID_INBOUND_QUANTITY.code,
+        ProductException.INVALID_INBOUND_QUANTITY.message,
+      );
+    }
+  }
+
+  export class InsufficientStock extends CustomBadRequest {
+    constructor() {
+      super(
+        ProductException.INSUFFICIENT_STOCK.code,
+        ProductException.INSUFFICIENT_STOCK.message,
       );
     }
   }

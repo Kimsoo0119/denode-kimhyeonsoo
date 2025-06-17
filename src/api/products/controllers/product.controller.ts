@@ -1,13 +1,13 @@
-import { Controller, Post, Body, UseGuards, Param } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Param, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProductService } from '../services/product.service';
 import { CreateProductDto } from '../dtos/requests/create-product.dto';
-import { StockInDto } from '../dtos/requests/stock-in.dto';
-import { ProductResponseDto } from '../dtos/responses/product-response.dto';
+import { StockInboundDto } from '../dtos/requests/stock-inbound.dto';
 import { AccessTokenGuard } from '@core/jwt/guards/access-token.guard';
 import { GetAuthorizedUser } from '@shared/decorators';
 import { TokenPayload } from '@api/auth/interfaces/interface';
 import { ApiProduct } from '@api/products/swaggers/product.swagger';
+import { StockOutboundDto } from '@api/products/dtos/requests/stock-outbound.dto';
 
 @ApiTags('Products')
 @Controller('products')
@@ -38,12 +38,26 @@ export class ProductController {
   async processInbound(
     @GetAuthorizedUser() user: TokenPayload,
     @Param('productId') productId: number,
-    @Body() stockInDto: StockInDto,
+    @Body() stockInboundDto: StockInboundDto,
   ): Promise<void> {
-    return await this.productService.processInbound(
+    await this.productService.processInbound(user, productId, stockInboundDto);
+  }
+
+  @ApiProduct.ProcessOutbound({
+    summary: '제품 출고',
+    description: '출고시 유통기한이 가까운 제품부터 출고됩니다.',
+  })
+  @Post('/:productId/outbound')
+  @UseGuards(AccessTokenGuard)
+  async processOutbound(
+    @GetAuthorizedUser() user: TokenPayload,
+    @Param('productId') productId: number,
+    @Body() stockOutboundDto: StockOutboundDto,
+  ): Promise<void> {
+    await this.productService.processOutbound(
       user,
       productId,
-      stockInDto,
+      stockOutboundDto,
     );
   }
 }

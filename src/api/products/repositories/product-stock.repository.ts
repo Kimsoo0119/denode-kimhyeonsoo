@@ -26,6 +26,12 @@ export class ProductStockRepository {
     });
   }
 
+  async findByProductId(productId: number): Promise<ProductStock[]> {
+    return await this.repository.find({
+      where: { productId },
+    });
+  }
+
   async trxCreate(
     manager: EntityManager,
     productStockData: Partial<ProductStock>,
