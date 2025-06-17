@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { User } from '@entities/user.entity';
 import { Product } from '@entities/product.entity';
-import { Inventory } from '@entities/inventory.entity';
+import { ProductStock } from '@entities/product-stock.entity';
 import { BaseEntity } from '@entities/base.entity';
 
 @Entity('companies')
@@ -15,6 +15,6 @@ export class Company extends BaseEntity {
   @OneToMany(() => Product, (product) => product.company)
   products: Product[];
 
-  @OneToMany(() => Inventory, (inventory) => inventory.company)
-  inventories: Inventory[];
+  @OneToMany(() => ProductStock, (productStock) => productStock.company)
+  productStocks: ProductStock[];
 }

@@ -1,7 +1,8 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProductService } from '../services/product.service';
 import { CreateProductDto } from '../dtos/requests/create-product.dto';
+import { StockInDto } from '../dtos/requests/stock-in.dto';
 import { ProductResponseDto } from '../dtos/responses/product-response.dto';
 import { AccessTokenGuard } from '@core/jwt/guards/access-token.guard';
 import { GetAuthorizedUser } from '@shared/decorators';
@@ -26,6 +27,23 @@ export class ProductController {
     return await this.productService.createProduct(
       createProductDto,
       user.companyId,
+    );
+  }
+
+  @ApiProduct.ProcessInbound({
+    summary: '제품 입고',
+  })
+  @Post('/:productId/inbound')
+  @UseGuards(AccessTokenGuard)
+  async processInbound(
+    @GetAuthorizedUser() user: TokenPayload,
+    @Param('productId') productId: number,
+    @Body() stockInDto: StockInDto,
+  ): Promise<void> {
+    return await this.productService.processInbound(
+      user,
+      productId,
+      stockInDto,
     );
   }
 }

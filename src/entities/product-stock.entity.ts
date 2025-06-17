@@ -5,17 +5,18 @@ import {
   OneToMany,
   JoinColumn,
   Index,
-  VersionColumn,
   Check,
+  Unique,
 } from 'typeorm';
 import { BaseEntity } from '@entities/base.entity';
 import { Product } from '@entities/product.entity';
 import { Company } from '@entities/company.entity';
-import { InventoryHistory } from '@entities/inventory-history.entity';
+import { StockHistory } from '@entities/stock-history.entity';
 
-@Entity('inventory')
+@Entity('product_stock')
 @Check('quantity >= 0')
-export class Inventory extends BaseEntity {
+@Unique(['productId', 'companyId', 'expirationAt'])
+export class ProductStock extends BaseEntity {
   @Column()
   productId: number;
 
@@ -26,19 +27,16 @@ export class Inventory extends BaseEntity {
   quantity: number;
 
   @Column({ type: 'date', nullable: true })
-  expirationDate?: Date;
+  expirationAt?: Date;
 
-  @VersionColumn()
-  version: number;
-
-  @ManyToOne(() => Product, (product) => product.inventories)
+  @ManyToOne(() => Product, (product) => product.productStocks)
   @JoinColumn({ name: 'product_id' })
   product: Product;
 
-  @ManyToOne(() => Company, (company) => company.inventories)
+  @ManyToOne(() => Company, (company) => company.productStocks)
   @JoinColumn({ name: 'company_id' })
   company: Company;
 
-  @OneToMany(() => InventoryHistory, (history) => history.inventory)
-  histories: InventoryHistory[];
+  @OneToMany(() => StockHistory, (history) => history.productStock)
+  histories: StockHistory[];
 }

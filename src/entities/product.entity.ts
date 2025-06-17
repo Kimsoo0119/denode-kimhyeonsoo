@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from '@entities/base.entity';
 import { Company } from '@entities/company.entity';
-import { Inventory } from '@entities/inventory.entity';
+import { ProductStock } from '@entities/product-stock.entity';
 
 @Entity('products')
 @Index(['companyId', 'isActive'])
@@ -29,6 +29,6 @@ export class Product extends BaseEntity {
   @JoinColumn({ name: 'company_id' })
   company: Company;
 
-  @OneToMany(() => Inventory, (inventory) => inventory.product)
-  inventories: Inventory[];
+  @OneToMany(() => ProductStock, (productStock) => productStock.product)
+  productStocks: ProductStock[];
 }

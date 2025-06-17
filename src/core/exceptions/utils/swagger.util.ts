@@ -1,13 +1,15 @@
 import {
   AuthExceptionValue,
   CompanyExceptionValue,
+  ProductExceptionValue,
   UserExceptionValue,
 } from '@core/exceptions/constants';
 
 type AllExceptionValues =
   | AuthExceptionValue
   | CompanyExceptionValue
-  | UserExceptionValue;
+  | UserExceptionValue
+  | ProductExceptionValue;
 
 export const toSwagger = (exception: AllExceptionValues) => ({
   error: exception.code,
