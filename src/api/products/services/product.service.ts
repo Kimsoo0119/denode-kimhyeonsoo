@@ -20,6 +20,8 @@ import { ProductListResponseDto } from '../dtos/responses/product-list-response.
 import { GetProductsDto } from '@api/products/dtos/requests/get-products.dto';
 import { plainToInstance } from 'class-transformer';
 import { CommonExceptions } from '@core/exceptions/domains';
+import { GetProductStocksDto } from '@api/products/dtos/requests/get-product-stocks.dto';
+import { ProductStockListResponseDto } from '@api/products/dtos/responses/product-stock.dto';
 
 @Injectable()
 export class ProductService {
@@ -449,12 +451,8 @@ export class ProductService {
     const offset = (targetPage - 1) * take;
 
     const [products, totalItemCount] = await Promise.all([
-      this.productRepository.findProductsWithTotalQuantity(
-        companyId,
-        take,
-        offset,
-      ),
-      this.productRepository.countActiveProducts(companyId),
+      this.productRepository.findWithTotalQuantity(companyId, take, offset),
+      this.productRepository.countActive(companyId),
     ]);
 
     const totalPages = Math.ceil(totalItemCount / take);
@@ -468,6 +466,35 @@ export class ProductService {
       totalPages,
       totalItemCount,
       products,
+    });
+  }
+
+  async getProductStocks(
+    user: TokenPayload,
+    productId: number,
+    getProductStocksDto: GetProductStocksDto,
+  ): Promise<ProductStockListResponseDto> {
+    await this.validateProductOwnership(productId, user.companyId);
+
+    const { targetPage = 1, take = 10 } = getProductStocksDto;
+    const offset = (targetPage - 1) * take;
+
+    const [productStocks, totalItemCount] = await Promise.all([
+      this.productStockRepository.findByProductId(productId, take, offset),
+      this.productStockRepository.countByProductId(productId),
+    ]);
+
+    const totalPages = Math.ceil(totalItemCount / take);
+
+    if (targetPage > totalPages) {
+      throw new CommonExceptions.InvalidPageRange();
+    }
+
+    return plainToInstance(ProductStockListResponseDto, {
+      currentPage: targetPage,
+      totalPages,
+      totalItemCount,
+      productStocks,
     });
   }
 }

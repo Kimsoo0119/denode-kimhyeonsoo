@@ -9,6 +9,7 @@ import {
   ProductException,
 } from '@core/exceptions/constants';
 import { ProductListResponseDto } from '../dtos/responses/product-list-response.dto';
+import { ProductStockListResponseDto } from '@api/products/dtos/responses/product-stock.dto';
 
 export const ApiProduct: ApiOperator<keyof ProductController> = {
   CreateProduct: (apiOperationOptions: ApiOperationOptions) =>
@@ -44,6 +45,28 @@ export const ApiProduct: ApiOperator<keyof ProductController> = {
           AuthException.JWT_EXPIRED,
         ),
       )
+      .build(),
+
+  GetProductStocks: (apiOperationOptions: ApiOperationOptions) =>
+    CustomSwaggerBuilder()
+      .withOperation(apiOperationOptions)
+      .withBearerAuth()
+      .withBodyResponse(
+        HttpStatus.OK,
+        'ApiProduct_GetProductStocks',
+        ProductStockListResponseDto,
+      )
+      .withBadRequestResponse(toSwaggers(CommonException.INVALID_PAGE_RANGE))
+      .withUnauthorizedResponse(
+        toSwaggers(
+          AuthException.UNAUTHORIZED,
+          AuthException.NO_AUTH_TOKEN,
+          AuthException.INVALID_TOKEN,
+          AuthException.JWT_EXPIRED,
+        ),
+      )
+      .withNotFoundResponse(toSwaggers(ProductException.NOT_FOUND))
+      .withForbiddenResponse(toSwaggers(ProductException.NOT_OWNER))
       .build(),
 
   ProcessInbound: (apiOperationOptions: ApiOperationOptions) =>
@@ -94,7 +117,6 @@ export const ApiProduct: ApiOperator<keyof ProductController> = {
           AuthException.JWT_EXPIRED,
         ),
       )
-
       .withForbiddenResponse(toSwaggers(ProductException.NOT_OWNER))
       .build(),
 };

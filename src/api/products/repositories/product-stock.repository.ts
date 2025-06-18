@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, EntityManager, IsNull } from 'typeorm';
+import { Repository, EntityManager, IsNull, MoreThan } from 'typeorm';
 import { ProductStock } from '@entities/product-stock.entity';
 
 @Injectable()
@@ -26,9 +26,30 @@ export class ProductStockRepository {
     });
   }
 
-  async findByProductId(productId: number): Promise<ProductStock[]> {
-    return await this.repository.find({
-      where: { productId },
+  async findByProductId(
+    productId: number,
+    take?: number,
+    offset?: number,
+  ): Promise<ProductStock[]> {
+    const queryBuilder = this.repository
+      .createQueryBuilder('ps')
+      .where('ps.productId = :productId', { productId })
+      .orderBy('ps.expirationAt IS NULL', 'ASC')
+      .addOrderBy('ps.expirationAt', 'ASC');
+
+    if (take) {
+      queryBuilder.take(take);
+    }
+    if (offset) {
+      queryBuilder.skip(offset);
+    }
+
+    return await queryBuilder.getMany();
+  }
+
+  async countByProductId(productId: number): Promise<number> {
+    return await this.repository.count({
+      where: { productId, quantity: MoreThan(0) },
     });
   }
 

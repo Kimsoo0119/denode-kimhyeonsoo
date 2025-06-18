@@ -25,7 +25,7 @@ export class ProductRepository {
     return await manager.save(product);
   }
 
-  async findProductsWithTotalQuantity(
+  async findWithTotalQuantity(
     companyId: number,
     limit: number,
     offset: number,
@@ -51,7 +51,7 @@ export class ProductRepository {
     return await this.dataSource.query(query, [companyId, limit, offset]);
   }
 
-  async countActiveProducts(companyId: number): Promise<number> {
+  async countActive(companyId: number): Promise<number> {
     return await this.repository.count({
       where: {
         companyId,
