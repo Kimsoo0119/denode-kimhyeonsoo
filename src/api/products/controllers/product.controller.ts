@@ -1,5 +1,13 @@
-import { Controller, Post, Body, UseGuards, Param, Get } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Param,
+  Get,
+  Query,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ProductService } from '../services/product.service';
 import { CreateProductDto } from '../dtos/requests/create-product.dto';
 import { StockInboundDto } from '../dtos/requests/stock-inbound.dto';
@@ -8,6 +16,8 @@ import { GetAuthorizedUser } from '@shared/decorators';
 import { TokenPayload } from '@api/auth/interfaces/interface';
 import { ApiProduct } from '@api/products/swaggers/product.swagger';
 import { StockOutboundDto } from '@api/products/dtos/requests/stock-outbound.dto';
+import { GetProductsDto } from '../dtos/requests/get-products.dto';
+import { ProductListResponseDto } from '../dtos/responses/product-list-response.dto';
 
 @ApiTags('Products')
 @Controller('products')
@@ -27,6 +37,23 @@ export class ProductController {
     return await this.productService.createProduct(
       createProductDto,
       user.companyId,
+    );
+  }
+
+  @ApiProduct.GetProducts({
+    summary: '제품 목록 조회',
+    description:
+      '가장 최근에 등록된 제품부터 조회되며 페이지 번호와 페이지당 조회 개수를 지정할 수 있습니다.',
+  })
+  @UseGuards(AccessTokenGuard)
+  @Get()
+  async getProducts(
+    @GetAuthorizedUser() user: TokenPayload,
+    @Query() getProductsDto: GetProductsDto,
+  ): Promise<ProductListResponseDto> {
+    return await this.productService.getProducts(
+      user.companyId,
+      getProductsDto,
     );
   }
 

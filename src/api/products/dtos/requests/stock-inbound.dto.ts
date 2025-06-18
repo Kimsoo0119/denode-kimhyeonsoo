@@ -1,4 +1,9 @@
-import { IsInt, IsPositive, IsDateString, IsOptional } from 'class-validator';
+import {
+  IsPositive,
+  IsDateString,
+  IsOptional,
+  IsNumber,
+} from 'class-validator';
 import { RequiredApiProperty, OptionalApiProperty } from '@shared/decorators';
 
 export class StockInboundDto {
@@ -6,7 +11,7 @@ export class StockInboundDto {
     description: '입고 수량',
     example: 100,
   })
-  @IsInt()
+  @IsNumber()
   @IsPositive()
   quantity: number;
 

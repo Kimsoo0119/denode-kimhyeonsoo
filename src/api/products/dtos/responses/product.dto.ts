@@ -1,44 +1,45 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ExposeApiProperty } from '@shared/decorators';
+import { Exclude } from 'class-transformer';
 
-export class ProductResponseDto {
-  @ApiProperty({
+@Exclude()
+export class ProductDto {
+  @ExposeApiProperty({
     description: '제품 ID',
     example: 1,
   })
   id: number;
 
-  @ApiProperty({
+  @ExposeApiProperty({
     description: '제품명',
     example: '아스피린 500mg',
   })
   name: string;
 
-  @ApiProperty({
+  @ExposeApiProperty({
     description: '제품 설명',
     example: '해열진통제',
     nullable: true,
   })
   description?: string;
 
-  @ApiProperty({
+  @ExposeApiProperty({
     description: '회사 ID',
     example: 1,
   })
   companyId: number;
 
-  @ApiProperty({
+  @ExposeApiProperty({
     description: '활성화 상태',
-    example: false,
   })
   isActive: boolean;
 
-  @ApiProperty({
+  @ExposeApiProperty({
     description: '생성일시',
     example: '2024-06-15T10:00:00.000Z',
   })
   createdAt: Date;
 
-  @ApiProperty({
+  @ExposeApiProperty({
     description: '수정일시',
     example: '2024-06-15T10:00:00.000Z',
   })

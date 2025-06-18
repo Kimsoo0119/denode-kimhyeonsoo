@@ -16,6 +16,10 @@ import {
 import { OutboundRequest } from '../domains/outbound-request';
 import { StockOutboundDto } from '@api/products/dtos/requests/stock-outbound.dto';
 import { StockUpdate } from '@api/products/interface/interface';
+import { ProductListResponseDto } from '../dtos/responses/product-list-response.dto';
+import { GetProductsDto } from '@api/products/dtos/requests/get-products.dto';
+import { plainToInstance } from 'class-transformer';
+import { CommonExceptions } from '@core/exceptions/domains';
 
 @Injectable()
 export class ProductService {
@@ -37,16 +41,6 @@ export class ProductService {
     });
 
     return savedProduct.id;
-  }
-
-  async getProductStocks(productId: number): Promise<Number> {
-    const productStocks =
-      await this.productStockRepository.findByProductId(productId);
-    const totalQuantity = productStocks.reduce(
-      (acc, stock) => acc + stock.quantity,
-      0,
-    );
-    return totalQuantity;
   }
 
   async processInbound(
@@ -445,5 +439,35 @@ export class ProductService {
         total_outbound
       ) VALUES ${values}`,
     );
+  }
+
+  async getProducts(
+    companyId: number,
+    getProductsDto: GetProductsDto,
+  ): Promise<ProductListResponseDto> {
+    const { targetPage = 1, take = 10 } = getProductsDto;
+    const offset = (targetPage - 1) * take;
+
+    const [products, totalItemCount] = await Promise.all([
+      this.productRepository.findProductsWithTotalQuantity(
+        companyId,
+        take,
+        offset,
+      ),
+      this.productRepository.countActiveProducts(companyId),
+    ]);
+
+    const totalPages = Math.ceil(totalItemCount / take);
+
+    if (targetPage > totalPages) {
+      throw new CommonExceptions.InvalidPageRange();
+    }
+
+    return plainToInstance(ProductListResponseDto, {
+      currentPage: targetPage,
+      totalPages,
+      totalItemCount,
+      products,
+    });
   }
 }

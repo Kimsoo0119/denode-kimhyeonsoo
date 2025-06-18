@@ -3,7 +3,12 @@ import { HttpStatus } from '@nestjs/common';
 import { ApiOperator, ApiOperationOptions } from 'nest-swagger-builder';
 import { ProductController } from '@api/products/controllers/product.controller';
 import { toSwaggers } from '@core/exceptions/utils';
-import { AuthException, ProductException } from '@core/exceptions/constants';
+import {
+  AuthException,
+  CommonException,
+  ProductException,
+} from '@core/exceptions/constants';
+import { ProductListResponseDto } from '../dtos/responses/product-list-response.dto';
 
 export const ApiProduct: ApiOperator<keyof ProductController> = {
   CreateProduct: (apiOperationOptions: ApiOperationOptions) =>
@@ -11,6 +16,26 @@ export const ApiProduct: ApiOperator<keyof ProductController> = {
       .withOperation(apiOperationOptions)
       .withBearerAuth()
       .withBodyResponse(HttpStatus.CREATED, 'ApiProduct_CreateProduct', Number)
+      .withUnauthorizedResponse(
+        toSwaggers(
+          AuthException.UNAUTHORIZED,
+          AuthException.NO_AUTH_TOKEN,
+          AuthException.INVALID_TOKEN,
+          AuthException.JWT_EXPIRED,
+        ),
+      )
+      .build(),
+
+  GetProducts: (apiOperationOptions: ApiOperationOptions) =>
+    CustomSwaggerBuilder()
+      .withOperation(apiOperationOptions)
+      .withBearerAuth()
+      .withBodyResponse(
+        HttpStatus.OK,
+        'ApiProduct_GetProducts',
+        ProductListResponseDto,
+      )
+      .withBadRequestResponse(toSwaggers(CommonException.INVALID_PAGE_RANGE))
       .withUnauthorizedResponse(
         toSwaggers(
           AuthException.UNAUTHORIZED,
