@@ -26,6 +26,12 @@ JWT_REFRESH_EXPIRES_IN=30d
 docker-compose up -d
 ```
 
+### (optional) 시드 데이터 생성
+
+```
+npm run seed
+```
+
 ## 📖 API 문서
 
 ### Swagger UI 접속
