@@ -1,5 +1,5 @@
 import { OptionalApiProperty } from '@shared/decorators';
-import { IsInt, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsNumber, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class PaginationParamsDto {
@@ -8,7 +8,6 @@ export class PaginationParamsDto {
     example: 1,
     default: 1,
   })
-  @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(1)
@@ -19,7 +18,6 @@ export class PaginationParamsDto {
     example: 10,
     default: 10,
   })
-  @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(1)

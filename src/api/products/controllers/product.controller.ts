@@ -6,6 +6,7 @@ import {
   Param,
   Get,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ProductService } from '../services/product.service';
@@ -68,7 +69,7 @@ export class ProductController {
   @UseGuards(AccessTokenGuard)
   async getProductStocks(
     @GetAuthorizedUser() user: TokenPayload,
-    @Param('productId') productId: number,
+    @Param('productId', ParseIntPipe) productId: number,
     @Query() getProductStocksDto: GetProductStocksDto,
   ): Promise<ProductStockListResponseDto> {
     return await this.productService.getProductStocks(
@@ -85,7 +86,7 @@ export class ProductController {
   @UseGuards(AccessTokenGuard)
   async processInbound(
     @GetAuthorizedUser() user: TokenPayload,
-    @Param('productId') productId: number,
+    @Param('productId', ParseIntPipe) productId: number,
     @Body() stockInboundDto: StockInboundDto,
   ): Promise<void> {
     await this.productService.processInbound(user, productId, stockInboundDto);
@@ -99,7 +100,7 @@ export class ProductController {
   @UseGuards(AccessTokenGuard)
   async processOutbound(
     @GetAuthorizedUser() user: TokenPayload,
-    @Param('productId') productId: number,
+    @Param('productId', ParseIntPipe) productId: number,
     @Body() stockOutboundDto: StockOutboundDto,
   ): Promise<void> {
     await this.productService.processOutbound(

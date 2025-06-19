@@ -45,10 +45,9 @@ export class AuthTokenService {
   }
 
   setRefreshTokenCookie(response: Response, refreshToken: string): void {
-    // Refresh Token만 쿠키 설정 (7일)
     response.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: false, // 개발환경에서는 false
+      secure: false,
       maxAge: this.jwtRefreshTokenTtl,
       path: '/',
     });

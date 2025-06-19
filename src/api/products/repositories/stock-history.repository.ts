@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntityManager } from 'typeorm';
-import { StockHistory } from '@entities/stock-history.entity';
+import { StockHistory, StockHistoryType } from '@entities/stock-history.entity';
 
 @Injectable()
 export class StockHistoryRepository {
@@ -27,5 +27,25 @@ export class StockHistoryRepository {
   ): Promise<StockHistory> {
     const history = manager.create(StockHistory, historyData);
     return await manager.save(history);
+  }
+
+  async findAndCountWithUser(
+    productStockId: number,
+    type?: StockHistoryType,
+    take?: number,
+    skip?: number,
+  ): Promise<[StockHistory[], number]> {
+    const queryBuilder = this.repository
+      .createQueryBuilder('sh')
+      .leftJoinAndSelect('sh.user', 'u')
+      .where('sh.productStockId = :productStockId', { productStockId });
+
+    if (type) {
+      queryBuilder.andWhere('sh.type = :type', { type });
+    }
+
+    queryBuilder.orderBy('sh.createdAt', 'DESC').take(take).skip(skip);
+
+    return await queryBuilder.getManyAndCount();
   }
 }
